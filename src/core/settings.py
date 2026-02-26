@@ -1,12 +1,20 @@
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only-change-me")
+def env_str(name, default=""):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip()
+
+
+SECRET_KEY = env_str("SECRET_KEY", "django-insecure-dev-only-change-me") or "django-insecure-dev-only-change-me"
 
 
 def env_bool(name, default=False):
@@ -17,12 +25,37 @@ def env_bool(name, default=False):
 
 DEBUG = env_bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "*").split(",") if host.strip()]
+def normalize_host(value):
+    host = value.strip()
+    if not host:
+        return ""
+    if "://" in host:
+        parsed = urlparse(host)
+        return (parsed.hostname or "").strip()
+    host = host.split("/")[0]
+    return host.split(":")[0].strip()
 
+
+raw_allowed_hosts = env_str("ALLOWED_HOSTS", "*")
+ALLOWED_HOSTS = [normalize_host(host) for host in raw_allowed_hosts.split(",") if normalize_host(host)] or ["*"]
+
+def normalize_origin(value):
+    origin = value.strip()
+    if not origin:
+        return ""
+    if "://" not in origin:
+        origin = f"https://{origin}"
+    parsed = urlparse(origin)
+    if not parsed.scheme or not parsed.netloc:
+        return ""
+    return f"{parsed.scheme}://{parsed.netloc}"
+
+
+raw_csrf_origins = env_str("CSRF_TRUSTED_ORIGINS", "")
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
-    if origin.strip()
+    normalize_origin(origin)
+    for origin in raw_csrf_origins.split(",")
+    if normalize_origin(origin)
 ]
 
 INSTALLED_APPS = [
@@ -67,12 +100,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-DB_NAME = os.getenv("DB_NAME") or os.getenv("PGDATABASE")
-DB_USER = os.getenv("DB_USER") or os.getenv("PGUSER")
-DB_PASSWORD = os.getenv("DB_PASSWORD") or os.getenv("PGPASSWORD")
-DB_HOST = os.getenv("DB_HOST") or os.getenv("PGHOST")
-DB_PORT = os.getenv("DB_PORT") or os.getenv("PGPORT") or "5432"
-DATABASE_URL = os.getenv("DATABASE_URL")
+DB_NAME = env_str("DB_NAME") or env_str("PGDATABASE")
+DB_USER = env_str("DB_USER") or env_str("PGUSER")
+DB_PASSWORD = env_str("DB_PASSWORD") or env_str("PGPASSWORD")
+DB_HOST = env_str("DB_HOST") or env_str("PGHOST")
+DB_PORT = env_str("DB_PORT") or env_str("PGPORT") or "5432"
+DATABASE_URL = env_str("DATABASE_URL")
+if DATABASE_URL and "://" not in DATABASE_URL:
+    DATABASE_URL = ""
 DB_SSL_REQUIRE = env_bool("DB_SSL_REQUIRE", default=False)
 
 if DATABASE_URL:
