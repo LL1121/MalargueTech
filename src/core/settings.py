@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+import dj_database_url
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -69,8 +71,18 @@ DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=False,
+        )
+    }
+elif all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -78,7 +90,7 @@ if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
             "USER": DB_USER,
             "PASSWORD": DB_PASSWORD,
             "HOST": DB_HOST,
-            "PORT": "5432",
+            "PORT": DB_PORT,
         }
     }
 else:
