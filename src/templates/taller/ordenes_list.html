@@ -37,10 +37,16 @@
           <p class="mb-3 text-muted">Precio: ${{ orden.precio_estimado }}</p>
           <div class="d-flex justify-content-between align-items-center">
             <a href="{% url 'orden_detalle' orden.id %}" class="btn btn-sm btn-outline-secondary">Abrir</a>
-            <form method="post" action="{% url 'orden_delete' orden.id %}" class="m-0">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar esta orden?')">Eliminar</button>
-            </form>
+            <button class="btn btn-sm btn-outline-secondary action-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#orden-actions-{{ orden.id }}" aria-expanded="false" aria-controls="orden-actions-{{ orden.id }}">▾</button>
+          </div>
+          <div class="collapse mt-3" id="orden-actions-{{ orden.id }}">
+            <div class="d-flex justify-content-end gap-2 action-panel">
+              <a href="{% url 'orden_edit' orden.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+              <form method="post" action="{% url 'orden_delete' orden.id %}" class="m-0 js-delete-form" data-entity="orden">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

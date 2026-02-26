@@ -118,6 +118,20 @@ def cliente_create(request):
     return render(request, "taller/form_page.html", {"title": "Nuevo cliente", "form": form})
 
 
+
+
+@login_required
+def cliente_edit(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+    if request.method == "POST":
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cliente actualizado correctamente.")
+            return redirect("clientes_list")
+    else:
+        form = ClienteForm(instance=cliente)
+    return render(request, "taller/form_page.html", {"title": "Editar cliente", "form": form})
 @login_required
 def equipo_create(request):
     next_url = request.GET.get("next") or request.POST.get("next")
@@ -138,6 +152,20 @@ def equipo_create(request):
     )
 
 
+
+
+@login_required
+def equipo_edit(request, pk):
+    equipo = get_object_or_404(Equipo, pk=pk)
+    if request.method == "POST":
+        form = EquipoForm(request.POST, instance=equipo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Equipo actualizado correctamente.")
+            return redirect("equipos_list")
+    else:
+        form = EquipoForm(instance=equipo)
+    return render(request, "taller/form_page.html", {"title": "Editar equipo", "form": form})
 @login_required
 def repuesto_create(request):
     if request.method == "POST":
@@ -151,6 +179,20 @@ def repuesto_create(request):
     return render(request, "taller/form_page.html", {"title": "Nuevo repuesto", "form": form})
 
 
+
+
+@login_required
+def repuesto_edit(request, pk):
+    repuesto = get_object_or_404(Repuesto, pk=pk)
+    if request.method == "POST":
+        form = RepuestoForm(request.POST, instance=repuesto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Repuesto actualizado correctamente.")
+            return redirect("repuestos_list")
+    else:
+        form = RepuestoForm(instance=repuesto)
+    return render(request, "taller/form_page.html", {"title": "Editar repuesto", "form": form})
 @login_required
 def orden_create(request):
     equipos = Equipo.objects.select_related("cliente").order_by("-creado_en")
@@ -254,6 +296,20 @@ def orden_detalle(request, pk):
             "badge": BADGE_BY_ESTADO.get(orden.estado, "secondary"),
         },
     )
+
+
+@login_required
+def orden_edit(request, pk):
+    orden = get_object_or_404(OrdenReparacion, pk=pk)
+    if request.method == "POST":
+        form = OrdenReparacionForm(request.POST, instance=orden)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Orden actualizada correctamente.")
+            return redirect("ordenes_list")
+    else:
+        form = OrdenReparacionForm(instance=orden)
+    return render(request, "taller/form_page.html", {"title": "Editar orden", "form": form})
 
 
 def seguimiento_publico(request, token):

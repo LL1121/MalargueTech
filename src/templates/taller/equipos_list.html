@@ -13,14 +13,22 @@
     <div class="col-md-6 col-lg-4">
       <div class="card app-card h-100">
         <div class="card-body">
-          <h2 class="h6 mb-2">{{ equipo.tipo }} {{ equipo.marca }} {{ equipo.modelo }}</h2>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h6 mb-0">{{ equipo.tipo }} {{ equipo.marca }} {{ equipo.modelo }}</h2>
+            <button class="btn btn-sm btn-outline-secondary action-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#equipo-actions-{{ equipo.id }}" aria-expanded="false" aria-controls="equipo-actions-{{ equipo.id }}">▾</button>
+          </div>
           <p class="mb-1 text-muted">Cliente: {{ equipo.cliente.nombre }}</p>
           <p class="mb-1 text-muted">Serie: {{ equipo.numero_serie|default:'-' }}</p>
           <p class="mb-0 text-muted">Obs: {{ equipo.observaciones_ingreso|default:'-'|truncatechars:80 }}</p>
-          <form method="post" action="{% url 'equipo_delete' equipo.id %}" class="mt-3 text-end">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este equipo?')">Eliminar</button>
-          </form>
+          <div class="collapse mt-3" id="equipo-actions-{{ equipo.id }}">
+            <div class="d-flex justify-content-end gap-2 action-panel">
+              <a href="{% url 'equipo_edit' equipo.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+              <form method="post" action="{% url 'equipo_delete' equipo.id %}" class="m-0 js-delete-form" data-entity="equipo">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
