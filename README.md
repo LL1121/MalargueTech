@@ -102,6 +102,41 @@ En `docker-compose.yml` ya están definidas para desarrollo:
 
 Para emails reales se recomienda luego configurar SMTP y `EMAIL_BACKEND` en producción.
 
+## Deploy en Railway
+
+Este repo ya está preparado para Railway usando `Dockerfile` + `railway.json`.
+
+### 1) Crear proyecto y conectar repo
+- En Railway: **New Project** → **Deploy from GitHub Repo**.
+
+### 2) Agregar PostgreSQL
+- En Railway: **New** → **Database** → **PostgreSQL**.
+
+### 3) Configurar variables de entorno del servicio web
+
+Recomendadas:
+- `SECRET_KEY` = (valor largo y seguro)
+- `DEBUG` = `false`
+- `ALLOWED_HOSTS` = `tu-app.up.railway.app`
+- `CSRF_TRUSTED_ORIGINS` = `https://tu-app.up.railway.app`
+- `DB_NAME` = `${{Postgres.PGDATABASE}}`
+- `DB_USER` = `${{Postgres.PGUSER}}`
+- `DB_PASSWORD` = `${{Postgres.PGPASSWORD}}`
+- `DB_HOST` = `${{Postgres.PGHOST}}`
+- `SITE_BASE_URL` = `https://tu-app.up.railway.app`
+
+### 4) Deploy
+- Railway ejecuta automáticamente build/deploy.
+- El contenedor corre: migraciones, `collectstatic` y `gunicorn`.
+
+### 5) Crear usuario admin en producción
+
+Usar Railway Shell o una ejecución manual:
+
+```bash
+python src/manage.py createsuperuser
+```
+
 ## Manual de uso (Dueño)
 
 Ver: `docs/manual_dueno.md`

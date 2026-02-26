@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 8000
 
 # 8. Comando por defecto para levantar el servidor
-CMD ["python", "src/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python src/manage.py migrate && python src/manage.py collectstatic --noinput && gunicorn core.wsgi:application --chdir src --bind 0.0.0.0:${PORT:-8000}"]
