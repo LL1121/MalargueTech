@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 8000
 
 # 8. Comando por defecto para levantar el servidor
-CMD ["sh", "-c", "until python src/manage.py migrate --noinput; do echo 'DB no lista, reintentando en 2s...'; sleep 2; done; python src/manage.py collectstatic --noinput; gunicorn core.wsgi:application --chdir src --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["sh", "-c", "attempts=0; until python src/manage.py migrate --noinput; do attempts=$((attempts+1)); if [ $attempts -ge 30 ]; then echo 'No se pudieron aplicar migraciones tras 30 intentos. Iniciando app para diagnóstico...'; break; fi; echo 'DB no lista, reintentando en 2s...'; sleep 2; done; python src/manage.py collectstatic --noinput || true; exec gunicorn core.wsgi:application --chdir src --bind 0.0.0.0:${PORT:-8000}"]
