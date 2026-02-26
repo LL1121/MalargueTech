@@ -1,0 +1,280 @@
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --line: #e6eaf0;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #3f6fb4;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1720;
+  --surface: #111b27;
+  --surface-soft: #162233;
+  --line: #243447;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --primary: #6b9cff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app-nav {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+
+.navbar-brand,
+.nav-link {
+  color: var(--text) !important;
+}
+
+.nav-link:hover {
+  color: var(--text) !important;
+  opacity: 0.9;
+}
+
+.nav-link.active {
+  color: var(--text) !important;
+  font-weight: 600;
+}
+
+.nav-link-logout {
+  color: #b42318 !important;
+}
+
+.nav-link-logout:hover {
+  color: #8f1d1d !important;
+}
+
+.user-chip {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.app-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+.card,
+.list-group-item {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.form-control,
+.form-select,
+textarea {
+  border-radius: 0.7rem !important;
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.form-label {
+  color: var(--text);
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(63, 111, 180, 0.15);
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: #355f9a;
+  border-color: #355f9a;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.metric-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.app-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  background: var(--surface-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-table td {
+  border-color: var(--line);
+}
+
+.app-alert {
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.module-title {
+  margin: 0;
+}
+
+.module-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  padding: 1.4rem 1rem;
+}
+
+.helper-text {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.repuestos-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.repuestos-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.repuestos-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+:root[data-theme="dark"] .repuestos-scroll::-webkit-scrollbar-thumb {
+  background: #3b4f68;
+}
+
+.stat-box {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  height: 100%;
+}
+
+.stat-box span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.stat-box strong {
+  color: var(--text);
+}
+
+.badge {
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 0.42rem 0.6rem;
+}
+
+.badge-status-default,
+.badge-status-ingresado {
+  color: #475467;
+  background: #f2f4f7;
+}
+
+.badge-status-revision {
+  color: #155b75;
+  background: #e6f4fa;
+}
+
+.badge-status-presupuestado {
+  color: #7a4d0b;
+  background: #fef3dc;
+}
+
+.badge-status-reparando {
+  color: #1d4f91;
+  background: #e9f0fb;
+}
+
+.badge-status-reparado,
+.badge-status-entregado {
+  color: #166534;
+  background: #e7f6ed;
+}
+
+.badge-status-cancelado {
+  color: #8f1d1d;
+  background: #fdecec;
+}
+
+:root[data-theme="dark"] .btn-outline-secondary {
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+:root[data-theme="dark"] .btn-outline-secondary:hover {
+  background: #1f2937;
+  border-color: #6b7280;
+}
+
+:root[data-theme="dark"] .btn-outline-danger {
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+:root[data-theme="dark"] .btn-outline-danger:hover {
+  background: #7f1d1d;
+  color: #fee2e2;
+}
+
+:root[data-theme="dark"] .text-muted,
+:root[data-theme="dark"] .text-secondary {
+  color: var(--muted) !important;
+}
+
+:root[data-theme="dark"] .bg-light-subtle {
+  background-color: var(--surface-soft) !important;
+}

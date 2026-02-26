@@ -1,0 +1,36 @@
+services:
+  # Servicio 1: Tu Aplicación Web (Django)
+  web:
+    build: .
+    command: python src/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app  # Sincroniza tu carpeta actual con el contenedor (útil para editar en vivo)
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_NAME=malargue_db
+      - DB_USER=lautaro
+      - DB_PASSWORD=secreto
+      - DB_HOST=db
+      - SITE_BASE_URL=http://localhost:8000
+
+  # Servicio 2: Base de Datos (PostgreSQL)
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Para no perder los datos si apagás el contenedor
+    environment:
+      - POSTGRES_DB=malargue_db
+      - POSTGRES_USER=lautaro
+      - POSTGRES_PASSWORD=secreto
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lautaro -d malargue_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  postgres_data:

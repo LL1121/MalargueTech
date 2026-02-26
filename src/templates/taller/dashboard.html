@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Panel | Malargüe Tech{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+  <div>
+    <p class="eyebrow mb-1">Panel operativo</p>
+    <h1 class="h3 mb-1">Control diario del taller</h1>
+    <p class="text-muted mb-0">Estado de órdenes, ingresos estimados y alertas de inventario.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary" href="{% url 'orden_create' %}">Nueva orden</a>
+    <a class="btn btn-outline-secondary" href="{% url 'repuesto_create' %}">Nuevo repuesto</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card app-card h-100">
+      <div class="card-body">
+        <p class="metric-label mb-1">Facturación estimada</p>
+        <h3 class="metric-value mb-0">${{ facturacion_estim }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card app-card h-100">
+      <div class="card-body">
+        <p class="metric-label mb-2">Estados activos</p>
+        <div class="d-flex flex-wrap gap-2">
+          {% for item in estadisticas_estados %}
+            <span class="badge badge-status-default">{{ item.estado }}: {{ item.total }}</span>
+          {% empty %}
+            <span class="text-muted">Sin datos</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card app-card h-100">
+      <div class="card-body">
+        <p class="metric-label mb-2">Stock crítico</p>
+        {% if stock_bajo %}
+          <ul class="mb-0 ps-3">
+            {% for rep in stock_bajo %}<li>{{ rep.nombre }} ({{ rep.stock_actual }})</li>{% endfor %}
+          </ul>
+        {% else %}
+          <p class="mb-0 text-muted">Sin alertas de stock crítico.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card app-card">
+  <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pb-0">
+    <h2 class="h5 mb-0">Órdenes de reparación</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 app-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Equipo</th>
+          <th>Estado</th>
+          <th>Técnico</th>
+          <th>Precio</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for orden in ordenes %}
+        <tr>
+          <td>{{ orden.id }}</td>
+          <td>{{ orden.equipo.cliente.nombre }}</td>
+          <td>{{ orden.equipo }}</td>
+          <td>
+            {% if orden.estado == 'INGRESADO' %}
+              <span class="badge badge-status-ingresado">{{ orden.get_estado_display }}</span>
+            {% elif orden.estado == 'EN_REVISION' %}
+              <span class="badge badge-status-revision">{{ orden.get_estado_display }}</span>
+            {% elif orden.estado == 'PRESUPUESTADO' %}
+              <span class="badge badge-status-presupuestado">{{ orden.get_estado_display }}</span>
+            {% elif orden.estado == 'REPARANDO' %}
+              <span class="badge badge-status-reparando">{{ orden.get_estado_display }}</span>
+            {% elif orden.estado == 'REPARADO' %}
+              <span class="badge badge-status-reparado">{{ orden.get_estado_display }}</span>
+            {% elif orden.estado == 'ENTREGADO' %}
+              <span class="badge badge-status-entregado">{{ orden.get_estado_display }}</span>
+            {% else %}
+              <span class="badge badge-status-cancelado">{{ orden.get_estado_display }}</span>
+            {% endif %}
+          </td>
+          <td>{% if orden.tecnico_asignado %}{{ orden.tecnico_asignado.username }}{% else %}-{% endif %}</td>
+          <td>${{ orden.precio_estimado }}</td>
+          <td><a href="{% url 'orden_detalle' orden.id %}" class="btn btn-sm btn-outline-secondary">Abrir</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center py-4">No hay órdenes registradas.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión | Malargüe Tech{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card app-card">
+      <div class="card-body p-4 p-md-5">
+        <h1 class="h4 mb-3">Iniciar sesión</h1>
+        <p class="text-muted">Accedé al panel del taller para gestionar órdenes, técnicos y stock.</p>
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="col-12">
+              <div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>
+            </div>
+          {% endif %}
+          <div class="col-12">
+            <label class="form-label fw-semibold" for="id_username">Usuario</label>
+            <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" for="id_password">Contraseña</label>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+          </div>
+          <div class="col-12 d-grid">
+            <button type="submit" class="btn btn-primary">Entrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -4,3 +4,6 @@ db.sqlite3
 .env
 venv/
 .DS_Store
+src/media/
+src/staticfiles/
+.pytest_cache/

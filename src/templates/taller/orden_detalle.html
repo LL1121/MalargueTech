@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Orden #{{ orden.id }} | Malargüe Tech{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">Orden #{{ orden.id }}</h1>
+  <span class="badge badge-status-{{ badge }} fs-6">{{ orden.get_estado_display }}</span>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card app-card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Datos de la orden</h2>
+        <p class="mb-1"><strong>Cliente:</strong> {{ orden.equipo.cliente.nombre }}</p>
+        <p class="mb-1"><strong>Equipo:</strong> {{ orden.equipo }}</p>
+        <p class="mb-1"><strong>Problema:</strong> {{ orden.problema_reportado }}</p>
+        <p class="mb-1"><strong>Diagnóstico:</strong> {{ orden.diagnostico|default:'-' }}</p>
+        <p class="mb-1"><strong>Técnico:</strong> {% if orden.tecnico_asignado %}{{ orden.tecnico_asignado.username }}{% else %}-{% endif %}</p>
+        <p class="mb-0"><strong>Precio estimado:</strong> ${{ orden.precio_estimado }}</p>
+      </div>
+    </div>
+
+    <div class="card app-card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Actualizar estado</h2>
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_estado">
+          {% for field in estado_form %}
+            <div class="col-12">
+              <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors|striptags }}</div>{% endif %}
+            </div>
+          {% endfor %}
+          <div class="col-12 text-end">
+            <button class="btn btn-primary" type="submit">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card app-card">
+      <div class="card-body">
+        <h2 class="h5">Repuestos utilizados</h2>
+        <form method="post" class="row g-3 mb-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_repuesto">
+          {% for field in repuesto_form %}
+            <div class="col-md-4">
+              <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+            </div>
+          {% endfor %}
+          <div class="col-12 text-end">
+            <button type="submit" class="btn btn-outline-secondary">Agregar repuesto</button>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle app-table">
+            <thead>
+              <tr><th>Repuesto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+              {% for item in orden.repuestos.all %}
+                <tr>
+                  <td>{{ item.repuesto.nombre }}</td>
+                  <td>{{ item.cantidad }}</td>
+                  <td>${{ item.precio_unitario }}</td>
+                  <td>${{ item.subtotal }}</td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="4" class="text-center">Sin repuestos cargados</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-end fw-semibold mb-0">Total repuestos: ${{ total_repuestos }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card app-card">
+      <div class="card-body text-center">
+        <h2 class="h5">Seguimiento QR</h2>
+        {% if orden.qr_imagen %}
+          <img src="{{ orden.qr_imagen.url }}" alt="QR Orden {{ orden.id }}" class="img-fluid rounded border p-2 mb-3" style="max-width: 260px;">
+        {% endif %}
+        <p class="small text-secondary mb-2">URL para cliente</p>
+        <a href="{{ orden.url_seguimiento }}" target="_blank" class="small d-block text-break">{{ orden.url_seguimiento }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

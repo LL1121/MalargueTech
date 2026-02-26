@@ -1,0 +1,46 @@
+from django.urls import path
+
+from taller.views import (
+    clientes_list,
+    cliente_create,
+    cliente_delete,
+    dashboard,
+    equipos_list,
+    equipo_create,
+    equipo_delete,
+    health,
+    home,
+    ordenes_list,
+    orden_create,
+    orden_create_form,
+    orden_delete,
+    orden_detalle,
+    repuestos_list,
+    repuesto_create,
+    repuesto_delete,
+    seed_demo_button,
+    seguimiento_publico,
+)
+
+
+urlpatterns = [
+    path("", home, name="home"),
+    path("health/", health, name="health"),
+    path("panel/", dashboard, name="dashboard"),
+    path("clientes/", clientes_list, name="clientes_list"),
+    path("clientes/nuevo/", cliente_create, name="cliente_create"),
+    path("clientes/<int:pk>/eliminar/", cliente_delete, name="cliente_delete"),
+    path("equipos/", equipos_list, name="equipos_list"),
+    path("equipos/nuevo/", equipo_create, name="equipo_create"),
+    path("equipos/<int:pk>/eliminar/", equipo_delete, name="equipo_delete"),
+    path("repuestos/", repuestos_list, name="repuestos_list"),
+    path("repuestos/nuevo/", repuesto_create, name="repuesto_create"),
+    path("repuestos/<int:pk>/eliminar/", repuesto_delete, name="repuesto_delete"),
+    path("ordenes/", ordenes_list, name="ordenes_list"),
+    path("ordenes/nueva/", orden_create, name="orden_create"),
+    path("ordenes/nueva/form/", orden_create_form, name="orden_create_form"),
+    path("ordenes/<int:pk>/", orden_detalle, name="orden_detalle"),
+    path("ordenes/<int:pk>/eliminar/", orden_delete, name="orden_delete"),
+    path("demo/seed/", seed_demo_button, name="seed_demo_button"),
+    path("seguimiento/<uuid:token>/", seguimiento_publico, name="seguimiento_publico"),
+]

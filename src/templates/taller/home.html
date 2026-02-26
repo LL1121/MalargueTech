@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Inicio | Malargüe Tech{% endblock %}
+{% block content %}
+<section class="surface p-4 p-md-5 mb-4 text-center">
+  <p class="eyebrow mb-2">Malargüe Tech</p>
+  <h1 class="display-6 fw-semibold mb-3">Sistema de gestión para taller técnico</h1>
+  <p class="text-muted mb-0">Entrá directo a cada módulo para trabajar rápido.</p>
+</section>
+
+<section class="row g-3">
+  {% if request.user.is_authenticated %}
+    {% for acceso in accesos %}
+      <div class="col-md-6 col-lg-3">
+        <a href="{{ acceso.url }}" class="text-decoration-none">
+          <div class="card app-card h-100">
+            <div class="card-body">
+              <h2 class="h5 mb-2 text-dark">{{ acceso.titulo }}</h2>
+              <p class="text-muted mb-0">{{ acceso.descripcion }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12">
+      <div class="card app-card">
+        <div class="card-body text-center py-5">
+          <p class="text-muted mb-3">Iniciá sesión para acceder a Equipos, Órdenes, Repuestos y Clientes.</p>
+          <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

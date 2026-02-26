@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Nueva orden | Selección de equipo{% endblock %}
+{% block content %}
+<div class="module-header">
+  <div>
+    <h1 class="h4 module-title">Nueva orden</h1>
+    <p class="module-subtitle">Paso 1 de 2: elegí un equipo existente o cargá uno nuevo.</p>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card app-card h-100">
+      <div class="card-body">
+        <h2 class="h5">1) Seleccionar equipo existente</h2>
+        <p class="text-muted">Elegí un equipo ya cargado para crear la orden.</p>
+        <form method="get" action="{% url 'orden_create_form' %}" class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold" for="equipo">Equipo</label>
+            <select class="form-select" id="equipo" name="equipo" required>
+              <option value="">Seleccionar...</option>
+              {% for equipo in equipos %}
+                <option value="{{ equipo.id }}">{{ equipo }} - {{ equipo.cliente.nombre }}</option>
+              {% endfor %}
+            </select>
+            <div class="helper-text mt-1">Si no aparece en la lista, podés crearlo desde la opción de la derecha.</div>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Continuar con orden</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card app-card h-100">
+      <div class="card-body">
+        <h2 class="h5">2) Añadir nuevo equipo</h2>
+        <p class="text-muted">Si el equipo no existe, cargalo primero y luego seguí con la orden.</p>
+        <a class="btn btn-outline-secondary" href="{% url 'equipo_create' %}?next=orden_create_form">Añadir equipo nuevo</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
