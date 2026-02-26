@@ -73,7 +73,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD") or os.getenv("PGPASSWORD")
 DB_HOST = os.getenv("DB_HOST") or os.getenv("PGHOST")
 DB_PORT = os.getenv("DB_PORT") or os.getenv("PGPORT") or "5432"
 DATABASE_URL = os.getenv("DATABASE_URL")
-DB_SSL_REQUIRE = env_bool("DB_SSL_REQUIRE", default=not DEBUG)
+DB_SSL_REQUIRE = env_bool("DB_SSL_REQUIRE", default=False)
 
 if DATABASE_URL:
     DATABASES = {
