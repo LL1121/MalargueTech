@@ -18,8 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 6. Copiamos el resto del código
 COPY . .
 
+# 6.1 Precompilamos estáticos en build para acelerar startup en runtime
+RUN python src/manage.py collectstatic --noinput || true
+
 # 7. Exponemos el puerto
 EXPOSE 8000
 
 # 8. Comando por defecto para levantar el servidor
-CMD ["sh", "-c", "python src/manage.py migrate --noinput || echo 'Migrate falló al iniciar; la app arranca igual para pasar healthcheck.'; python src/manage.py collectstatic --noinput || true; exec gunicorn core.wsgi:application --chdir src --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["sh", "-c", "if [ \"${RUN_MIGRATIONS:-1}\" = \"1\" ]; then python src/manage.py migrate --noinput || echo 'Migrate falló al iniciar; la app arranca igual para pasar healthcheck.'; fi; if [ \"${CREATE_SUPERUSER:-0}\" = \"1\" ] && [ -n \"${DJANGO_SUPERUSER_PASSWORD:-}\" ]; then python src/manage.py shell -c \"from django.contrib.auth import get_user_model; import os; User=get_user_model(); username=os.getenv('DJANGO_SUPERUSER_USERNAME','admin'); email=os.getenv('DJANGO_SUPERUSER_EMAIL','admin@malarguetech.com'); password=os.getenv('DJANGO_SUPERUSER_PASSWORD'); User.objects.filter(username=username).exists() or User.objects.create_superuser(username,email,password)\"; fi; exec gunicorn core.wsgi:application --chdir src --bind 0.0.0.0:${PORT:-8000}"]
